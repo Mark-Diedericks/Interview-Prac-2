@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 """
 Array-based implementation of the List Abstract Data Type.
 

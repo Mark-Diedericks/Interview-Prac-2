@@ -1,3 +1,11 @@
+"""
+ListADT based implementation of a line based editor
+
+@author         Mark Diedericks 30572738
+@since          18/09/2019
+@modified       18/09/2019
+"""
+
 class Editor:
     def __init__(self):
         raise NotImplementedError

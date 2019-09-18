@@ -1,6 +1,6 @@
 import math
 import unittest
-from test_common import *
+from Testing.test_common import *
 import task3
 
 class TestTask3(unittest.TestCase):

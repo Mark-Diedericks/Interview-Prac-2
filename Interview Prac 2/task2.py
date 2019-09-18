@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 """
 Array-based implementation of the List Abstract Data Type, dyanmic capacity.
 
@@ -22,7 +20,6 @@ class ListADT:
         """
         self.length = 0
         self.the_array = [None] * max(40, size)
-        print(max(40, size))
     
     def __str__(self):
         """
@@ -245,7 +242,7 @@ class ListADT:
         #Enforce size rules for the list
         self.enforce_size()
         
-    def enforce_size(self, downsize = False):
+    def enforce_size(self, shrink = False):
         """
         Enforces the resizing rules associated with the list's capacity;
         capacity must be 40 or above
@@ -253,7 +250,7 @@ class ListADT:
         capacity should be multiplied by 0.5 when list becomes less than 1/4 full (rounded up)
         Should be called when appending, deleting or inserting an item, not when instantiating a list.
 
-        @param          Downsize; indicates that a list operating resulting in a decrease in list length has occured, avoids resizing a new list to the minimum of 40
+        @param          Shrink; indicates that a list operating resulting in a decrease in list length has occured, avoids resizing a new list to the minimum of 40
         @return         None
         @complexity     O(1) for best - no resizing condition met, and O(n) worst case - resizing condition met, where n is self.length
         @exception      Will ensure the list capacity is 40 or above, less than or equal 4 times the length and greater than the length of the list
@@ -266,7 +263,7 @@ class ListADT:
             # Calculate new size; 1.9*old_size rounded up
             # Casting to an int will always round down, so add one to round up
             new_size = math.ceil(arr_size * 1.9)
-        elif self.length * 4 < max(40, arr_size) and downsize:
+        elif self.length * 4 < max(40, arr_size) and shrink:
             # Calculate new size; 0.5*old_size rounded up
             # Casting to an int will always round down, so add one to round up
             new_size = math.ceil(arr_size * 0.5)
