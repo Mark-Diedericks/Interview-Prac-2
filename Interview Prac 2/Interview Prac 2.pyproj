@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>d991a9eb-ae6e-4695-968f-8a35cfa4a128</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Testing\test_task3.py</StartupFile>
+    <StartupFile>test_task3.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -27,24 +27,20 @@
     <Compile Include="task3.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Testing\test_common.py" />
-    <Compile Include="Testing\test_prac2.py" />
-    <Compile Include="Testing\test_task1.py" />
-    <Compile Include="Testing\test_task2.py" />
-    <Compile Include="Testing\test_task3.py" />
-    <Compile Include="Testing\test_task4.py" />
-    <Compile Include="Testing\test_task5.py" />
-    <Compile Include="Testing\test_task6.py" />
-    <Compile Include="Testing\__init__.py">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Testing\" />
+    <Compile Include="test_common.py" />
+    <Compile Include="test_prac2.py" />
+    <Compile Include="test_task1.py" />
+    <Compile Include="test_task2.py" />
+    <Compile Include="test_task3.py" />
+    <Compile Include="test_task4.py" />
+    <Compile Include="test_task5.py" />
+    <Compile Include="test_task6.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="small.txt" />
     <Content Include="small2.txt" />
+    <Content Include="TestFile.txt" />
+    <Content Include="TrailFile.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

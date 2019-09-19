@@ -1,6 +1,6 @@
 import math
 import unittest
-from Testing.test_common import *
+from test_common import *
 import task1
 
 class TestTask1(unittest.TestCase):
@@ -99,7 +99,7 @@ class TestTask1(unittest.TestCase):
     self.assertFalse(x1 == x2, "Equality doesn't check values")
     # Check type
     self.assertFalse(x2 == [7, 8, 9], "Equality doesn't check type")
-    # Ensure same
+    # Ensure same value
     x1 = task1.ListADT(10)
     x2 = task1.ListADT(20)
     append(x1, [1, 2, 3])
@@ -123,15 +123,19 @@ class TestTask1(unittest.TestCase):
       append(x, [1 for i in range(20) ])
 
     # MY TESTING
+    # Insert full capacity
     x = task1.ListADT(10)
     append(x, [1 for i in range(10)])
     self.assertTrue(equal(x, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]))
 
     x1 = task1.ListADT(10)
     append(x1, [1, 2, 3])
+
+    #Insert at positive index
     x1.insert(1, 7)
     self.assertTrue(equal(x1, [1, 7, 2, 3]), "Insert with positive index not working")
-
+    
+    # Insert at negative index
     x1.insert(-1, 7)
     self.assertTrue(equal(x1, [1, 7, 2, 7, 3]), "Insert with negative index not working")
 
@@ -146,10 +150,15 @@ class TestTask1(unittest.TestCase):
     self.assertTrue(equal(x, [0,3,4,5]), msg =  "Negative deletion failed")
 
     #MY TESTING
+    # Ensure deleting at negative index
     x.delete(-1)
     self.assertTrue(equal(x, [0,3,4]), msg =  "Negative deletion failed")
+
+    # Ensure deleting first element
     x.delete(0)
     self.assertTrue(equal(x, [3,4]), msg =  "Negative deletion failed")
+
+    # Ensure error for index out of bounds
     with self.assertRaises(IndexError):
         x.delete(3)
 
