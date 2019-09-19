@@ -35,21 +35,3 @@ def read_text_file(name):
     # Return the list of lines
     return line_list
 
-
-
-### SMALL TESTS ###
-if __name__ == '__main__':
-    l = task2.ListADT()
-    l.append('Yossarian decided\n')
-    l.append('not to utter\n')
-    l.append('another word.')
-    assert read_text_file('small.txt') == l
-    
-    l = task2.ListADT()
-    l.append('Line 1\n')
-    l.append('Line 2\n')
-    l.append('Line 3\n')
-    l.append('Line 4')
-    assert read_text_file('small2.txt') == l
-    
-    print('Both tests passed.')

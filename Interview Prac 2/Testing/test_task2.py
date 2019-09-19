@@ -31,5 +31,18 @@ class TestTask2(unittest.TestCase):
       y.delete(len(y)-1)
     self.assertTrue(len(y.the_array) == 42, "Incorrect shrink.")
 
+    # MY TESTING
+    # Check shrinking
+    for i in range(10):
+      y.delete(len(y)-1)
+    self.assertTrue(len(y.the_array) == 40, "Incorrect shrinking to minium.")
+    # Check growing
+    for i in range(50):
+      y.insert(i, i)
+    self.assertEqual(len(y.the_array), 76, "Incorrect grow.") # math.ceil(40 * 1.9)
+    for i in range(20):
+        y.append(i)
+    self.assertEqual(len(y.the_array), 145, "Incorrect grow.") # math.ceil(76 * 1.9)
+
 if __name__ == '__main__':
   unittest.main()
