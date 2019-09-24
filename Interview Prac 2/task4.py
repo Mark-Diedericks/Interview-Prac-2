@@ -128,8 +128,8 @@ class Editor:
             
             i = num if num < 0 else num - 1
 
-            data.insert(0, self.text_lines[i])      # Store the line which we delete
-            self.text_lines.delete(i)               # Delete the line
+            data.push(self.text_lines[i])      # Store the line which we delete
+            self.text_lines.delete(i)          # Delete the line
 
         if not is_undo:
             # Calculate adjusted line number for insert to work
