@@ -106,17 +106,17 @@ class Editor:
         @postcondition  All lines will be deleted for no argument, a single line will be deleted for a valid argument.
         """
 
-        # Create a data list to store deleted line(s)
-        data = task2.ListADT()
+        # Create a data stack to store deleted line(s)
+        data = StackADT()
 
         # No line number given, delete all lines in the list.
         # Delete from the back forwards so that no shuffling is required
         # therefore the delte function runs in O(1) making the overall
         # complexity of this only O(n) instead O(n^2), where n is the number
-        # of lines of the file.
+        # of lines in the list.
         if len(line_num.strip()) == 0:
             for i in range(len(self.text_lines), 0, -1):
-                data.insert(0, self.text_lines[i - 1])   # Store each line which we delete, insert at 0 to undo reversed iterator
+                data.push(self.text_lines[i - 1])        # Store each line which we delete, in reversed order
                 self.text_lines.delete(i - 1)            # Delete each line individually, from back to front
         
         # An input value was given, attempt to parse it and delete
@@ -135,11 +135,20 @@ class Editor:
             # Calculate adjusted line number for insert to work
             adj_line_num = '1' if len(line_num.strip()) == 0 else line_num
 
+            # Convert the data stack into a data list, doing this will
+            # reverse the order of the reverse-ordered stack. Correcting
+            # the order whilst keeping time complexity at O(n) instead of
+            # increasing time complexity O(n^2) by instead using a data
+            # list and inserting each line at index 0, shufflinf the rest.
+            list_data = task2.ListADT()
+            while not data.is_empty():
+                list_data.insert(-1, data.pop());
+
             # Create a command list and store information required for undo
             cmd = task2.ListADT()
             cmd.insert(0, 'insert')        # Store complementary command
             cmd.insert(1, adj_line_num)    # Store line number
-            cmd.insert(2, data)            # Store deleted line(s)
+            cmd.insert(2, list_data)            # Store deleted line(s)
 
             # Push the command to the command stack
             self.cmd_stack.push(cmd);
