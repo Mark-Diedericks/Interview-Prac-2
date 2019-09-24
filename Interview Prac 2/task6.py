@@ -29,7 +29,7 @@ class StackADT:
         n = Node(self.top, item)
         self.top = n
 
-    def pop(self)
+    def pop(self):
         if is_empty():
             raise IndexError('Stack is empty')
         
