@@ -137,7 +137,7 @@ class TestTask1(unittest.TestCase):
     
     # Insert at negative index
     x1.insert(-1, 7)
-    self.assertTrue(equal(x1, [1, 7, 2, 7, 3]), "Insert with negative index not working")
+    self.assertTrue(equal(x1, [1, 7, 2, 3, 7]), "Insert with negative index not working")
 
   def test_delete(self):
     x = task1.ListADT(10)

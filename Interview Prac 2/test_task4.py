@@ -33,3 +33,6 @@ class TestTask4(unittest.TestCase):
     ed.insert_num_strings("-1", ToListADT(task2.ListADT, [test_content[2], test_content[3]]))
     self.assertTrue(equal_lines(ed, [test_content[2], test_content[3]]), msg =  "Incorrect handling of negative insertion")
 
+    
+if __name__ == '__main__':
+  unittest.main()

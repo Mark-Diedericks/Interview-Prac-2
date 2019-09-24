@@ -150,7 +150,7 @@ class ListADT:
             raise IndexError('Index out of bounds')
 
         # Calculate index, account for negative indexing
-        i = self.length + index if index < 0 else index
+        i = self.length + index + 1 if index < 0 else index
 
         # Shuffle elements with from position i up to make space for new item to be inserted at position i
         for j in range(self.length, i, -1):

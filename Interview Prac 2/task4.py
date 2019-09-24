@@ -48,27 +48,18 @@ class Editor:
         # No line number given, print all lines in the list
         if len(line_num.strip()) == 0:
             for i in range(len(self.text_lines)):
-                print(self.text_lines[i])     # Print each line individually, print will append new-line character to each
+                print('  ' + self.text_lines[i])     # Print each line individually, print will append new-line character to each
         
         # An input value was given, attempt to parse it and print
         else:
-            try:
-                # Calculate index and print line
-                num = int(line_num.strip())
-                if num == 0:
-                    raise IndexError()
+            # Calculate index and print line
+            num = int(line_num.strip())
+            if num == 0:
+                raise IndexError()
 
-                i = num if num < 0 else - 1
+            i = num if num < 0 else num - 1
 
-                print(self.text_lines[i])
-                
-            except ValueError:
-                # Input is not convertable to an integer
-                print('Invalid input argument.')
-
-            except IndexError:
-                # Input index is not within list bounds
-                print('Invalid line number.')
+            print('  ' + self.text_lines[i])
 
 
     def delete_num(self, line_num):
@@ -94,45 +85,37 @@ class Editor:
         
         # An input value was given, attempt to parse it and delete
         else:
-            try:
-                # Calculate index and delete line
-                num = int(line_num.strip())
-                if num == 0:
-                    raise IndexError()
+            # Calculate index and delete line
+            num = int(line_num.strip())
+            if num == 0:
+                raise IndexError()
+            
+            i = num if num < 0 else num - 1
 
-                i = num if num < 0 else - 1
+            self.text_lines.delete(i)
 
-                self.text_lines[i].delete(i)
-                
-            except ValueError:
-                # Input is not convertable to an integer
-                print('Invalid input argument.')
-
-            except IndexError:
-                # Input index is not within list bounds
-                print('Invalid line number.')
-
-    def insert_num(self, line_num, text):
+    def insert_num(self, line_num):
         """
         Inserts, in order, the inputted lines at the specified index
 
-        @param          Line_num; string representation of inputted line number 
-        @param          Text; string of lines to be inserted
+        @param          Line_num; string representation of inputted line number
         @return         None
         @complexity     O(m*n) for both best and worst case, where n is the length of text_lines and m is the length of lines
         @postcondition  text_lines will contain, in order, the lines at the specified index.
         """
 
-        # Convert text string into lines array
+        # Have user input line(s) and append them to a list,
+        # later insert this list using insert_num_strings
         lines = task2.ListADT()
-        for l in text.split('\n'):
-            if l.strip() != '.':
-                lines.append(l.replace('\n', ''))   # Ensure no new-line characters for consistency
+        l = input('  ')
+        while l.strip() != '.':
+            lines.append(l.replace('\n', ''))   # Ensure no new-line characters for consistency
+            l = input('  ')
 
         # Use insert_num_strings to insert lines
-        insert_num_strings(line_num, lines)
+        self.insert_num_strings(line_num, lines)
 
-    def insert_num_strings(self, num, lines):
+    def insert_num_strings(self, line_num, lines):
         """
         Inserts, in order, the inputted lines at the specified index
 
@@ -144,31 +127,90 @@ class Editor:
         """
         
         # An input value was given, attempt to parse it and delete
-        try:
-            # Calculate index
-            num = int(line_num.strip())
-            if num == 0:
-                raise IndexError()
+        # Calculate index, ensure not 0
+        num = int(line_num.strip())
+        if num == 0:
+            raise IndexError()
 
-            i = num if num < 0 else - 1
-            
-            # Insert the lines into their positions, however, since
-            # insert places the element at that shuffles the remaining
-            # items down, we want to insert the lines stepping forward,
-            # each time increasing the insert index by 1. This will ensure
-            # the number of elements which must be shuffled up to make
-            # space is constant. Thus the time complexity will be O(m*n)
-            # instead of O(m*(n+m)) where n is the number of elements past
-            # the index and m is the size of lines.
-            for j in range(len(lines)):
-                self.text_lines.insert(j + i, lines[j].replace('\n', ''))    # Ensure new-line characters are removed for consistency
-
-        except IndexError:
-            # Input index is not within list bounds
-            print('Invalid line number.')
+        i = num if num < 0 else num - 1
+        
+        # Insert the lines into their positions, however, since
+        # insert places the element at that shuffles the remaining
+        # items down, we want to insert the lines stepping forward,
+        # each time increasing the insert index by 1. This will ensure
+        # the number of elements which must be shuffled up to make
+        # space is constant. Thus the time complexity will be O(m*n)
+        # instead of O(m*(n+m)) where n is the number of elements past
+        # the index and m is the size of lines.    Note; when using
+        # negative indices, elements are inserted after, hence the
+        # index at which we insert is constant
+        for j in range(len(lines)):
+            pos = i if num < 0 else j + i
+            self.text_lines.insert(pos, lines[j].replace('\n', ''))    # Ensure new-line characters are removed for consistency
 
     def search_string(self, query):
         raise NotImplementedError
 
     def undo(self):
         raise NotImplementedError
+    
+    def poll_user(self):
+
+        # Print the menus
+        print('Menu:')
+        print('  read   file_name')
+        print('  print  line_num')
+        print('  delete line_num')
+        print('  insert line_num')
+        print('  search fnd_term')
+        print('  undo')
+        print('  quit')
+        print('')
+
+        try: 
+            # Get user input and parse
+            user_input = input(">> ").strip() + ' '      # Get user input and strip the whitespace, but ensure it always ends with whitespace
+            index = user_input.index(' ')                # Get the index of the first space, will be the end of the string if no arg is given
+            cmd = user_input[:index].strip().lower()     # Everything from the start to the first space is the command, convert to lower case
+            arg = user_input[index:].strip()             # Everything from the first space is the argument, this can be nothing once stripped
+
+            # Execute given command, not case sensitive to command
+            if cmd == 'read' or cmd == 'r':              # Read can be called by the command 'read' or 'r'
+                self.read_filename(arg)                     # Read requires a file name to provided as the argument
+
+            elif cmd == 'print' or cmd == 'p':           # Print can be called by the command 'print' or 'p'
+                self.print_num(arg)                         # Print has an optional line number as the argument
+
+            elif cmd == 'delete' or cmd == 'd':          # Delete can be called by the command 'delete' or 'd'
+                self.delete_num(arg)                        # Delete has an optional line number as the argument
+
+            elif cmd == 'insert' or cmd == 'i':          # Insert can be called by the command 'insert' or 'i'
+                self.insert_num(arg)                        # Insert requires a line number to provided as the argument
+
+            elif cmd == 'search' or cmd == 's':          # Search can be called by the command 'search' or 's'
+                self.insert_num(arg)                        # Search requires a search term to provided as the argument
+
+            elif cmd == 'undo' or cmd == 'u':            # Undo can be called by the command 'undo' or 'u'
+                self.insert_num(arg)                        # No argument required
+
+            elif cmd == 'quit' or cmd == 'exit' or cmd == 'q' or cmd == 'e':
+                # False indicates exit requested         #  Quit can be called by the commands; 'quit', 'q', 'exit' and 'e'
+                return False                                # No Argument required
+
+            else:                                        # Inputted command is not a known command or action
+                print('?')
+        except:
+            # Invalid argument
+            print('?')
+
+        # True indicates exit not requested
+        return True
+
+    ### END EDITOR CLASS ###
+
+
+
+if __name__ == '__main__':
+    ed = Editor()
+    while ed.poll_user():
+        print('')

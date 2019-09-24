@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>d991a9eb-ae6e-4695-968f-8a35cfa4a128</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>test_task3.py</StartupFile>
+    <StartupFile>task4.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -37,6 +37,7 @@
     <Compile Include="test_task6.py" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="1984.txt" />
     <Content Include="small.txt" />
     <Content Include="small2.txt" />
     <Content Include="TestFile.txt" />
