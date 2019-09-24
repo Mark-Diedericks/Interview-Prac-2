@@ -41,8 +41,7 @@ class Editor:
         @param          Line_num; string representation of inputted line number
         @return         None
         @complexity     O(1) for best case - single line, O(n) for worst case - all lines, where n is the length of text_lines
-        @postcondition  All lines will be printed for no argument, a single line will be printed for a valid argument, and a corresponding 
-                        error message will be printed for an invalid argument.
+        @postcondition  All lines will be printed for no argument, a single line will be printed for a valid argument.
         """
 
         # No line number given, print all lines in the list
@@ -70,8 +69,7 @@ class Editor:
         @return         None
         @complexity     O(1) for best case - single line at back, O(n) for worst case - all lines or single line not at back, 
                         where n is the length of text_lines
-        @postcondition  All lines will be deleted for no argument, a single line will be deleted for a valid argument, and a corresponding 
-                        error message will be printed for an invalid argument.
+        @postcondition  All lines will be deleted for no argument, a single line will be deleted for a valid argument.
         """
 
         # No line number given, delete all lines in the list.
@@ -149,7 +147,62 @@ class Editor:
             self.text_lines.insert(pos, lines[j].replace('\n', ''))    # Ensure new-line characters are removed for consistency
 
     def search_string(self, query):
-        raise NotImplementedError
+        """
+        Searches through the list of lines to find all lines which contain the query term, returns their line numbers.
+
+        @param          Query; the query term which to search for, case sensitive.
+        @return         Returns a list (ListADT) of all line numbers whose lines contain the query term
+        @complexity     O(n*m) for both best and worst case, where n is the length of text_lines and m is the average length of each line
+        @precondition   The provided query is not an empty string
+        @postcondition  line_nums will contain all the line numbers of lines which contain the query term at least once, case sensitive.
+        """
+
+        # Define the length of the query as a variable
+        n = len(query);
+
+        # Ensure the query isn't empty
+        if n == 0:
+            raise ValueError('Invalid query.')
+
+        # Initialize a list to store line numbers
+        line_nums = task2.ListADT()
+
+        # Iterate over each line, and search for the query term in the
+        # line. If it exists within the line, append the line number to
+        # the line_nums list. This will be returned and used to print
+        # the relevant lines
+        for i in range(len(self.text_lines)):
+            # Calculate the line number and get line contents
+            num = i + 1
+            line = self.text_lines[i]
+
+            # Define the length of the line as a variable
+            m = len(line)
+            k = 0;
+
+            # Iterate over each character in the line, compare with the query
+            for j in range(m):
+                # Small optimization, if there are less character left on the line
+                # than what is needed to complete the matching of query, then the
+                # query is not on this line and we can skip the last few characters.
+                if m - j  < n - k:
+                    break
+
+                # Check if each character in the sequence is the same, if not
+                # reset k to 0 and restart the sequence
+                if line[j] == query[k]:
+                    k += 1
+                else:
+                    k = 0
+
+                # If a sequence of characters, with length n, is found to be the
+                # same then there is a match. Add the line number and end the loop.
+                if k == n:
+                    line_nums.append(i + 1)     # Line number = index + 1
+                    break
+
+        # Return the list of line numbers where the query was found
+        return line_nums
 
     def undo(self):
         raise NotImplementedError
@@ -188,10 +241,14 @@ class Editor:
                 self.insert_num(arg)                        # Insert requires a line number to provided as the argument
 
             elif cmd == 'search' or cmd == 's':          # Search can be called by the command 'search' or 's'
-                self.insert_num(arg)                        # Search requires a search term to provided as the argument
+                nums = self.search_string(arg)                     # Search requires a search term to provided as the argument
+                
+                # Print lines
+                for i in range(len(nums)):
+                    print('  ' + self.text_lines[nums[i] - 1])
 
             elif cmd == 'undo' or cmd == 'u':            # Undo can be called by the command 'undo' or 'u'
-                self.insert_num(arg)                        # No argument required
+                self.undo()                                 # No argument required
 
             elif cmd == 'quit' or cmd == 'exit' or cmd == 'q' or cmd == 'e':
                 # False indicates exit requested         #  Quit can be called by the commands; 'quit', 'q', 'exit' and 'e'

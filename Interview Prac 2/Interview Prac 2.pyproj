@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>d991a9eb-ae6e-4695-968f-8a35cfa4a128</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>task4.py</StartupFile>
+    <StartupFile>task5.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -25,6 +25,10 @@
     <Compile Include="task2.py" />
     <Compile Include="task1.py" />
     <Compile Include="task3.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="task6.py" />
+    <Compile Include="task5.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="test_common.py" />
