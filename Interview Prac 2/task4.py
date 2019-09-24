@@ -8,7 +8,37 @@ ListADT based implementation of a line based editor
 
 import task2
 import task3
-import task6
+
+# Node class
+class Node:
+    def __init__(self, next, item):
+        self.next = next
+        self.item = item
+
+    ### END NODE CLASS ###
+
+# Linked node based stack implementation
+class StackADT:
+    def __init__(self):
+        self.top = None
+    
+    def is_empty(self):
+        return self.top is None
+
+    def push(self, item):
+        n = Node(self.top, item)
+        self.top = n
+
+    def pop(self):
+
+        if self.is_empty():
+            raise IndexError('Stack is empty')
+
+        n = self.top
+        self.top = n.next
+        return n.item
+
+    ### END STACK CLASS ###
 
 class Editor:
     def __init__(self):
@@ -18,10 +48,10 @@ class Editor:
         @param          None
         @return         None
         @complexity     O(1) for both best and worst case.
-        @postcondition  An empty list of lines is created for the instance
+        @postcondition  An empty list of lines is created for the instance, an empty command stack is created
         """
         self.text_lines = task2.ListADT()
-        self.cmd_stack = task6.StackADT()
+        self.cmd_stack = StackADT()
 
     def read_filename(self, file_name):
         """
@@ -33,8 +63,10 @@ class Editor:
         @precondition   The file, name, exists
         @exception      File does not exist, file handle cannot be obtained, file handle cannot be disposed.
         @postcondition  self.text_lines will contain, in order, the line of the file from top to bottom. Excluding new-line characters
+                        The command stack will be reset as previous commands are no longer relevant and undo-able.
         """
         self.text_lines = task3.read_text_file(file_name)
+        self.cmd_stack = StackADT();
         
     def print_num(self, line_num):
         """
@@ -63,7 +95,7 @@ class Editor:
             print('  ' + self.text_lines[i])
 
 
-    def delete_num(self, line_num):
+    def delete_num(self, line_num, is_undo = False):
         """
         Deletes the line at the specified line number or all lines if no line_num is empty.
 
@@ -74,6 +106,9 @@ class Editor:
         @postcondition  All lines will be deleted for no argument, a single line will be deleted for a valid argument.
         """
 
+        # Create a data list to store deleted line(s)
+        data = task2.ListADT()
+
         # No line number given, delete all lines in the list.
         # Delete from the back forwards so that no shuffling is required
         # therefore the delte function runs in O(1) making the overall
@@ -81,7 +116,8 @@ class Editor:
         # of lines of the file.
         if len(line_num.strip()) == 0:
             for i in range(len(self.text_lines), 0, -1):
-                self.text_lines.delete(i - 1)     # Delete each line individually
+                data.insert(0, self.text_lines[i - 1])   # Store each line which we delete, insert at 0 to undo reversed iterator
+                self.text_lines.delete(i - 1)            # Delete each line individually, from back to front
         
         # An input value was given, attempt to parse it and delete
         else:
@@ -92,7 +128,21 @@ class Editor:
             
             i = num if num < 0 else num - 1
 
-            self.text_lines.delete(i)
+            data.insert(0, self.text_lines[i])      # Store the line which we delete
+            self.text_lines.delete(i)               # Delete the line
+
+        if not is_undo:
+            # Calculate adjusted line number for insert to work
+            adj_line_num = '1' if len(line_num.strip()) == 0 else line_num
+
+            # Create a command list and store information required for undo
+            cmd = task2.ListADT()
+            cmd.insert(0, 'insert')        # Store complementary command
+            cmd.insert(1, adj_line_num)    # Store line number
+            cmd.insert(2, data)            # Store deleted line(s)
+
+            # Push the command to the command stack
+            self.cmd_stack.push(cmd);
 
     def insert_num(self, line_num):
         """
@@ -115,7 +165,7 @@ class Editor:
         # Use insert_num_strings to insert lines
         self.insert_num_strings(line_num, lines)
 
-    def insert_num_strings(self, line_num, lines):
+    def insert_num_strings(self, line_num, lines, is_undo = False):
         """
         Inserts, in order, the inputted lines at the specified index
 
@@ -147,6 +197,16 @@ class Editor:
         for j in range(len(lines)):
             pos = i if num < 0 else j + i
             self.text_lines.insert(pos, lines[j].replace('\n', ''))    # Ensure new-line characters are removed for consistency
+
+        if not is_undo:
+            # Create a command list and store information required for undo
+            cmd = task2.ListADT()
+            cmd.insert(0, 'delete')    # Store complementary command
+            cmd.insert(1, line_num)    # Store line number
+            cmd.insert(2, len(lines))  # Store length
+
+            # Push the command to the command stack
+            self.cmd_stack.push(cmd);
 
     def search_string(self, query):
         """
@@ -207,7 +267,41 @@ class Editor:
         return line_nums
 
     def undo(self):
-        raise NotImplementedError
+        """
+        Gets the complementary commmand from the top of the command stack and undoes the last insert/delete command
+
+        @param          None
+        @return         None
+        @complexity     O(m*n) for both best and worst case, where n is the length of text_lines and m is the length of lines
+                        to be inserted or deleted.
+        @postcondition  text_lines will be restored to its state before the execution of the insert/delete command being undone.
+        """
+        
+        # If there are no commands to undo, do nothing
+        if self.cmd_stack.is_empty():
+            return True
+
+        # Get the command which must be undone
+        execute = self.cmd_stack.pop()
+        cmd = execute[0]
+        arg = execute[1]
+        data = execute[2]
+
+        # Execute command
+        if cmd == 'delete':
+            # Delete each line that was inserted
+            for _ in range(data):
+                self.delete_num(arg, True)
+
+        elif cmd == 'insert':
+            # Insert each line that was deleted
+            self.insert_num_strings(arg, data, True)
+
+        else:
+            return False    # Undo was unsuccessful
+
+        return True     # Undo was successful
+
     
     def poll_user(self):
 
@@ -243,14 +337,16 @@ class Editor:
                 self.insert_num(arg)                        # Insert requires a line number to provided as the argument
 
             elif cmd == 'search' or cmd == 's':          # Search can be called by the command 'search' or 's'
-                nums = self.search_string(arg)                     # Search requires a search term to provided as the argument
+                nums = self.search_string(arg)              # Search requires a search term to provided as the argument
                 
                 # Print lines
                 for i in range(len(nums)):
                     print('  ' + self.text_lines[nums[i] - 1])
 
             elif cmd == 'undo' or cmd == 'u':            # Undo can be called by the command 'undo' or 'u'
-                self.undo()                                 # No argument required
+                result = self.undo()                        # No argument required
+                if not result:
+                    print('Unable to undo action.')
 
             elif cmd == 'quit' or cmd == 'exit' or cmd == 'q' or cmd == 'e':
                 # False indicates exit requested         #  Quit can be called by the commands; 'quit', 'q', 'exit' and 'e'
