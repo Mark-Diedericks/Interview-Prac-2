@@ -21,7 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Editor.py" />
+    <Compile Include="task4.py" />
     <Compile Include="task2.py" />
     <Compile Include="task1.py" />
     <Compile Include="task3.py">

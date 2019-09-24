@@ -11,16 +11,16 @@ class TestTask3(unittest.TestCase):
     
     # Ensure read lines are the same
     l = task2.ListADT()
-    l.append('Yossarian decided\n')
-    l.append('not to utter\n')
+    l.append('Yossarian decided')
+    l.append('not to utter')
     l.append('another word.')
     self.assertTrue(task3.read_text_file('small.txt') == l)
     
     # Ensure read lines are the same
     l = task2.ListADT()
-    l.append('Line 1\n')
-    l.append('Line 2\n')
-    l.append('Line 3\n')
+    l.append('Line 1')
+    l.append('Line 2')
+    l.append('Line 3')
     l.append('Line 4')
     self.assertTrue(task3.read_text_file('small2.txt') == l)
     

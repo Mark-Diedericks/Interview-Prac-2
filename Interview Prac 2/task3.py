@@ -10,14 +10,14 @@ import task2
 
 def read_text_file(name):
     """
-    Set the element in the list at index
+    Read the lines of a text file as elements into a list
 
-    @param          None
-    @return         None
-    @complexity     O(1) for both best and worst case
-    @precondition   The index is within then list bounds; -self.length <= index <= self.length-1
-    @exception      Index is out of bounds 
-    @postcondition  The element located at the index will be item
+    @param          Name; The full file name
+    @return         A ListADT instance where each element is a line from the provided text file
+    @complexity     O(n) for both best and worst case, where n is the number of lines of the file
+    @precondition   The file, name, exists
+    @exception      File does not exist, file handle cannot be obtained, file handle cannot be disposed.
+    @postcondition  The line_list will contain, in order, the line of the file from top to bottom. Excluding new-line characters
     """
     
     # Instantiate a list for the lines
@@ -26,7 +26,7 @@ def read_text_file(name):
     # Open the file, read each line and append to the line_list
     with open(name) as f:
         for line in f:
-            line_list.append(line)
+            line_list.append(line.replace('\n', ''))    # Remove new-line characters
 
     # Ensure file is closed
     if not f.closed:
