@@ -8,6 +8,7 @@ ListADT based implementation of a line based editor
 
 import task2
 import task3
+import task6
 
 class Editor:
     def __init__(self):
@@ -20,6 +21,7 @@ class Editor:
         @postcondition  An empty list of lines is created for the instance
         """
         self.text_lines = task2.ListADT()
+        self.cmd_stack = task6.StackADT()
 
     def read_filename(self, file_name):
         """
