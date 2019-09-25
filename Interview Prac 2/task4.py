@@ -221,7 +221,8 @@ class Editor:
 
         @param          Query; the query term which to search for, case sensitive.
         @return         Returns a list (ListADT) of all line numbers whose lines contain the query term
-        @complexity     O(n*m) for both best and worst case, where n is the length of text_lines and m is the average length of each line
+        @complexity     O(n*m) for best - single or no match, and O(n*m^2) for worst case - each character matches first of query,
+                        where n is the length of text_lines and m is the average length of each line
         @precondition   The provided query is not an empty string
         @postcondition  line_nums will contain all the line numbers of lines which contain the query term at least once, case sensitive.
         """
@@ -349,21 +350,21 @@ class Editor:
             user_input = input(">> ").strip() + ' '      # Get user input and strip the whitespace, but ensure it always ends with whitespace
             index = user_input.index(' ')                # Get the index of the first space, will be the end of the string if no arg is given
             cmd = user_input[:index].strip().lower()     # Everything from the start to the first space is the command, convert to lower case
-            arg = user_input[index:].strip()             # Everything from the first space is the argument, this can be nothing once stripped
+            arg = user_input[index+1:]                     # Everything from the first space is the argument, this can be nothing once stripped
 
             # Execute given command, not case sensitive to command
             if cmd == 'read' or cmd == 'r' or cmd == 'load' or cmd == 'l':              
-                self.read_filename(arg)                  # Read can be called by the commands; 'read', 'r', 'load' and 'l'
+                self.read_filename(arg.strip())                  # Read can be called by the commands; 'read', 'r', 'load' and 'l'
                                                             # Read requires a file name to provided as the argument
 
             elif cmd == 'print' or cmd == 'p':           # Print can be called by the command 'print' or 'p'
-                self.print_num(arg)                         # Print has an optional line number as the argument
+                self.print_num(arg.strip())                         # Print has an optional line number as the argument
 
             elif cmd == 'delete' or cmd == 'd':          # Delete can be called by the command 'delete' or 'd'
-                self.delete_num(arg)                        # Delete has an optional line number as the argument
+                self.delete_num(arg.strip())                        # Delete has an optional line number as the argument
 
             elif cmd == 'insert' or cmd == 'i':          # Insert can be called by the command 'insert' or 'i'
-                self.insert_num(arg)                        # Insert requires a line number to provided as the argument
+                self.insert_num(arg.strip())                        # Insert requires a line number to provided as the argument
 
             elif cmd == 'search' or cmd == 's':          # Search can be called by the command 'search' or 's'
                 nums = self.search_string(arg)              # Search requires a search term to provided as the argument
