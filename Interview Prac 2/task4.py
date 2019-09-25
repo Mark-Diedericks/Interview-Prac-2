@@ -243,33 +243,58 @@ class Editor:
         for i in range(len(self.text_lines)):
             # Get line contents
             line = self.text_lines[i]
+            matches = task2.ListADT()
+            match = False
 
             # Define the length of the line as a variable
             m = len(line)
-            k = 0;
-
+            #k = 0;
+            
             # Iterate over each character in the line, compare with the query
             for j in range(m):
-                # Small optimization, if there are less character left on the line
-                # than what is needed to complete the matching of query, then the
-                # query is not on this line and we can skip the last few characters.
-                if m - j < n - k:
+                # If a match has already been found on this line, don't keep looking
+                # the index will already be added to the line number list
+                if match:
                     break
 
-                # Check if each character in the sequence is the same, if not
-                # reset k to 0 and restart the sequence and check if the first
-                # characters match, perhaps starting the sequence again
-                if line[j] == query[k]:
-                    k += 1
-                else:
-                    k = 1 if line[j] == query[0] else 0     # line[j] may not have been the correct character to continue the sequence,
-                                                            # however it may be the correct character to restart the sequence.
+                # If the character in the line matches the beginning of our query,
+                # save the index as a possible match
+                if line[j] ==  query[0]:
+                    matches.insert(-1, j)
+                
+                # For each possbile query match, ensure it is still a valid match,
+                # the reason we store all matches as opposed to just keeping track
+                # of the latest match is because we may miss some instances. For
+                # example;    finding 'nnot' in the line 'nnnot' would not work
+                # if we did not keep track of every possible match's start index.
+                # The reason we loop backwards through matches is purely to improve
+                # time complexity. Assuming some matches may need to be deleted, we
+                # want to delete the ones at the back first, this will reduce the
+                # number of elements that require shuffling for matches earlier in
+                # the matches list.
+                k = len(matches)
+                while k > 0:
+                    # Calculate the character index in the query
+                    l = j - matches[k - 1]
 
-                # If a sequence of characters, with length n, is found to be the
-                # same then there is a match. Add the line number and end the loop.
-                if k == n:
-                    line_nums.append(i + 1)     # Line number = index + 1
-                    break
+                    # Check if each character in the sequence is the same, if not
+                    # reset k to 0 and restart the sequence and check if the first
+                    # characters match, perhaps starting the sequence again
+                    if line[j] != query[l]:
+                        matches.delete(k - 1)
+                        k -= 1
+                        continue
+
+                    # If a sequence of characters, with length n, is found to be the
+                    # same then there is a match. Add the line number and end the loop.
+                    if l + 1 == n:
+                        matches.delete(k - 1)
+                        match = True
+                        line_nums.append(i + 1)     # Line number = index + 1
+                        break
+
+                    # Decrement the index for matches
+                    k -= 1
 
         # Return the list of line numbers where the query was found
         return line_nums
@@ -356,7 +381,7 @@ class Editor:
 
             else:                                        # Inputted command is not a known command or action
                 print('?')
-        except:
+        except ValueError:
             # Invalid argument
             print('?')
 
