@@ -3,7 +3,7 @@ ListADT based implementation of a line based editor
 
 @author         Mark Diedericks 30572738
 @since          18/09/2019
-@modified       23/09/2019
+@modified       25/09/2019
 """
 
 import task2
@@ -107,16 +107,22 @@ class Editor:
         """
 
         # Create a data stack to store deleted line(s)
-        data = StackADT()
+        data = task2.ListADT()
 
         # No line number given, delete all lines in the list.
         # Delete from the back forwards so that no shuffling is required
-        # therefore the delte function runs in O(1) making the overall
+        # therefore the delete function runs in O(1) making the overall
         # complexity of this only O(n) instead O(n^2), where n is the number
-        # of lines in the list.
+        # of lines in the list. The same applies to the insert, we insert
+        # at the rear of the list to avoid shuffling items, keeping the
+        # complexity at O(n). However, because of this we must iteratre
+        # twice, once to save all the lines, and another to delete allm the
+        # lines. This increases the constant factor but complexity stays O(n).
         if len(line_num.strip()) == 0:
+            for i in range(len(self.text_lines)):
+                data.insert(-1, self.text_lines[i])      # Store each line we delete, from front to back
+
             for i in range(len(self.text_lines), 0, -1):
-                data.push(self.text_lines[i - 1])        # Store each line which we delete, in reversed order
                 self.text_lines.delete(i - 1)            # Delete each line individually, from back to front
         
         # An input value was given, attempt to parse it and delete
@@ -128,27 +134,18 @@ class Editor:
             
             i = num if num < 0 else num - 1
 
-            data.push(self.text_lines[i])      # Store the line which we delete
-            self.text_lines.delete(i)          # Delete the line
+            data.insert(-1, self.text_lines[i]) # Store the line which we delete
+            self.text_lines.delete(i)           # Delete the line
 
         if not is_undo:
             # Calculate adjusted line number for insert to work
             adj_line_num = '1' if len(line_num.strip()) == 0 else line_num
 
-            # Convert the data stack into a data list, doing this will
-            # reverse the order of the reverse-ordered stack. Correcting
-            # the order whilst keeping time complexity at O(n) instead of
-            # increasing time complexity O(n^2) by instead using a data
-            # list and inserting each line at index 0, shufflinf the rest.
-            list_data = task2.ListADT()
-            while not data.is_empty():
-                list_data.insert(-1, data.pop());
-
             # Create a command list and store information required for undo
             cmd = task2.ListADT()
             cmd.insert(0, 'insert')        # Store complementary command
             cmd.insert(1, adj_line_num)    # Store line number
-            cmd.insert(2, list_data)            # Store deleted line(s)
+            cmd.insert(2, data)            # Store deleted line(s)
 
             # Push the command to the command stack
             self.cmd_stack.push(cmd);
@@ -243,8 +240,7 @@ class Editor:
         # the line_nums list. This will be returned and used to print
         # the relevant lines
         for i in range(len(self.text_lines)):
-            # Calculate the line number and get line contents
-            num = i + 1
+            # Get line contents
             line = self.text_lines[i]
 
             # Define the length of the line as a variable
@@ -256,15 +252,17 @@ class Editor:
                 # Small optimization, if there are less character left on the line
                 # than what is needed to complete the matching of query, then the
                 # query is not on this line and we can skip the last few characters.
-                if m - j  < n - k:
+                if m - j < n - k:
                     break
 
                 # Check if each character in the sequence is the same, if not
-                # reset k to 0 and restart the sequence
+                # reset k to 0 and restart the sequence and check if the first
+                # characters match, perhaps starting the sequence again
                 if line[j] == query[k]:
                     k += 1
                 else:
-                    k = 0
+                    k = 1 if line[j] == query[0] else 0     # line[j] may not have been the correct character to continue the sequence,
+                                                            # however it may be the correct character to restart the sequence.
 
                 # If a sequence of characters, with length n, is found to be the
                 # same then there is a match. Add the line number and end the loop.
@@ -286,9 +284,9 @@ class Editor:
         @postcondition  text_lines will be restored to its state before the execution of the insert/delete command being undone.
         """
         
-        # If there are no commands to undo, do nothing
+        # If there are no commands to undo, raise exception
         if self.cmd_stack.is_empty():
-            return True
+            raise IndexError('Stack is empty.')
 
         # Get the command which must be undone
         execute = self.cmd_stack.pop()
@@ -307,9 +305,7 @@ class Editor:
             self.insert_num_strings(arg, data, True)
 
         else:
-            return False    # Undo was unsuccessful
-
-        return True     # Undo was successful
+            raise ValueError('Unknown complementary command.')
 
     
     def poll_user(self):
@@ -354,9 +350,7 @@ class Editor:
                     print('  ' + self.text_lines[nums[i] - 1])
 
             elif cmd == 'undo' or cmd == 'u':            # Undo can be called by the command 'undo' or 'u'
-                result = self.undo()                        # No argument required
-                if not result:
-                    print('Unable to undo action.')
+                self.undo()                                 # No argument required
 
             elif cmd == 'quit' or cmd == 'exit' or cmd == 'q' or cmd == 'e':
                 # False indicates exit requested         #  Quit can be called by the commands; 'quit', 'q', 'exit' and 'e'

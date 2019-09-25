@@ -6,7 +6,7 @@ https://lms.monash.edu/mod/forum/discuss.php?d=1740300
 
 @author         Mark Diedericks 30572738
 @since          23/09/2019
-@modified       23/09/2019
+@modified       24/09/2019
 """
 
 from task4 import Editor
