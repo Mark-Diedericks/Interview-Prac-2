@@ -195,7 +195,7 @@ class Editor:
         i = num if num < 0 else num - 1
         
         # Insert the lines into their positions, however, since
-        # insert places the element at that shuffles the remaining
+        # insert places the element before, it shuffles the remaining
         # items down, we want to insert the lines stepping forward,
         # each time increasing the insert index by 1. This will ensure
         # the number of elements which must be shuffled up to make
