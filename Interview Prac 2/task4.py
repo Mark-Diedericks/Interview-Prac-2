@@ -17,6 +17,13 @@ class Node:
 
     ### END NODE CLASS ###
 
+# Command class
+class Command:
+    def __init__(self, cmd, arg, data):
+        self.cmd = cmd
+        self.arg = arg
+        self.data = data
+
 # Linked node based stack implementation
 class StackADT:
     def __init__(self):
@@ -142,10 +149,7 @@ class Editor:
             adj_line_num = '1' if len(line_num.strip()) == 0 else line_num
 
             # Create a command list and store information required for undo
-            cmd = task2.ListADT()
-            cmd.insert(0, 'insert')        # Store complementary command
-            cmd.insert(1, adj_line_num)    # Store line number
-            cmd.insert(2, data)            # Store deleted line(s)
+            cmd = Command('insert', adj_line_num, data)
 
             # Push the command to the command stack
             self.cmd_stack.push(cmd);
@@ -206,10 +210,7 @@ class Editor:
 
         if not is_undo:
             # Create a command list and store information required for undo
-            cmd = task2.ListADT()
-            cmd.insert(0, 'delete')    # Store complementary command
-            cmd.insert(1, line_num)    # Store line number
-            cmd.insert(2, len(lines))  # Store length
+            cmd = Command('delete', line_num, len(lines))
 
             # Push the command to the command stack
             self.cmd_stack.push(cmd);
@@ -289,20 +290,17 @@ class Editor:
             raise IndexError('Stack is empty.')
 
         # Get the command which must be undone
-        execute = self.cmd_stack.pop()
-        cmd = execute[0]
-        arg = execute[1]
-        data = execute[2]
+        cmd = self.cmd_stack.pop()
 
         # Execute command
-        if cmd == 'delete':
+        if cmd.cmd == 'delete':
             # Delete each line that was inserted
-            for _ in range(data):
-                self.delete_num(arg, True)
+            for _ in range(cmd.data):
+                self.delete_num(cmd.arg, True)
 
-        elif cmd == 'insert':
+        elif cmd.cmd == 'insert':
             # Insert each line that was deleted
-            self.insert_num_strings(arg, data, True)
+            self.insert_num_strings(cmd.arg, cmd.data, True)
 
         else:
             raise ValueError('Unknown complementary command.')

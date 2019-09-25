@@ -12,6 +12,7 @@ https://lms.monash.edu/mod/forum/discuss.php?d=1740300
 
 from task4 import Editor
 from task4 import StackADT
+from task4 import Command
 
 if __name__ == '__main__':
     ed = Editor()
