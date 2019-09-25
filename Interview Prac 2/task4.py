@@ -333,8 +333,9 @@ class Editor:
             arg = user_input[index:].strip()             # Everything from the first space is the argument, this can be nothing once stripped
 
             # Execute given command, not case sensitive to command
-            if cmd == 'read' or cmd == 'r':              # Read can be called by the command 'read' or 'r'
-                self.read_filename(arg)                     # Read requires a file name to provided as the argument
+            if cmd == 'read' or cmd == 'r' or cmd == 'load' or cmd == 'l':              
+                self.read_filename(arg)                  # Read can be called by the commands; 'read', 'r', 'load' and 'l'
+                                                            # Read requires a file name to provided as the argument
 
             elif cmd == 'print' or cmd == 'p':           # Print can be called by the command 'print' or 'p'
                 self.print_num(arg)                         # Print has an optional line number as the argument
