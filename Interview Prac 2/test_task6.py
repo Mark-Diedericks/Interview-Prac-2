@@ -44,6 +44,12 @@ class TestTask6(unittest.TestCase):
     ed.insert_num_strings("-2", ToListADT(task2.ListADT, extra_lines))
     ed.undo()
     self.assertTrue(equal_lines(ed, small_content), msg =  "Incorrect handling of negative insert undo")
+
+    # Undo an empty insert
+    ed.read_filename('small.txt')
+    ed.insert_num_strings("-2", task2.ListADT())
+    ed.undo()
+    self.assertTrue(equal_lines(ed, small_content), msg =  "Incorrect handling of empty insert undo")
     
     # Undo an delete at positive index
     ed.read_filename('small.txt')
