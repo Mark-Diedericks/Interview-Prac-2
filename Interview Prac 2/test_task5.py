@@ -1,6 +1,7 @@
 import math
 import unittest
 from test_common import *
+import task2
 import task5
 
 class TestTask5(unittest.TestCase):
@@ -46,6 +47,21 @@ class TestTask5(unittest.TestCase):
     lines = [2]
     ed_lines = ed.search_string(query)
     self.assertTrue(sorted(ToList(ed_lines)) == lines, msg =  "Incorrect result for search query {0}".format(query))
+
+    # Check for recognition of 'abc' in 'aaabccc' and not 'abc ' in 'aaabccc'
+    ed = task5.Editor()
+    ed.insert_num_strings('1', ToListADT(task2.ListADT, ["aaabccc"]));
+
+    query = 'abc'
+    lines = [1]
+    ed_lines = ed.search_string(query)
+    self.assertTrue(sorted(ToList(ed_lines)) == lines, msg =  "Incorrect result for search query {0}".format(query))
+
+    query = 'abc '
+    lines = []
+    ed_lines = ed.search_string(query)
+    self.assertTrue(sorted(ToList(ed_lines)) == lines, msg =  "Incorrect result for search query {0}".format(query))
+
 
 if __name__ == '__main__':
   unittest.main()

@@ -347,10 +347,11 @@ class Editor:
 
         try: 
             # Get user input and parse
-            user_input = input(">> ").strip() + ' '      # Get user input and strip the whitespace, but ensure it always ends with whitespace
+            user_input = input(">> ") + ' '      # Get user input and strip the whitespace, but ensure it always ends with whitespace
             index = user_input.index(' ')                # Get the index of the first space, will be the end of the string if no arg is given
+            end = len(user_input) - 1                    # Enter will add a space at the end of the search term, remove this space
             cmd = user_input[:index].strip().lower()     # Everything from the start to the first space is the command, convert to lower case
-            arg = user_input[index+1:]                     # Everything from the first space is the argument, this can be nothing once stripped
+            arg = user_input[index+1:end]                # Everything from the first space is the argument, this can be nothing once stripped
 
             # Execute given command, not case sensitive to command
             if cmd == 'read' or cmd == 'r' or cmd == 'load' or cmd == 'l':              
@@ -382,7 +383,7 @@ class Editor:
 
             else:                                        # Inputted command is not a known command or action
                 print('?')
-        except ValueError:
+        except:
             # Invalid argument
             print('?')
 
