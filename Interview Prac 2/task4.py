@@ -37,7 +37,6 @@ class StackADT:
         self.top = n
 
     def pop(self):
-
         if self.is_empty():
             raise IndexError('Stack is empty')
 
