@@ -249,7 +249,6 @@ class Editor:
 
             # Define the length of the line as a variable
             m = len(line)
-            #k = 0;
             
             # Iterate over each character in the line, compare with the query
             for j in range(m):
