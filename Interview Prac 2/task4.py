@@ -123,8 +123,13 @@ class Editor:
         # of lines in the list. The same applies to the insert, we insert
         # at the rear of the list to avoid shuffling items, keeping the
         # complexity at O(n). However, because of this we must iteratre
-        # twice, once to save all the lines, and another to delete allm the
+        # twice, once to save all the lines, and another to delete all the
         # lines. This increases the constant factor but complexity stays O(n).
+        # As the list is used by reference, it would be bad practice to simply
+        # set data equal to the text_lines and then set text_lines to a new
+        # ListADT as this would change the object we refer to without changing
+        # other possible references. However, it would work in this case and
+        # it would certainly be much faster to execute.
         if len(line_num.strip()) == 0:
             for i in range(len(self.text_lines)):
                 data.insert(-1, self.text_lines[i])      # Store each line we delete, from front to back
