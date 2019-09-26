@@ -9,6 +9,13 @@ ListADT based implementation of a line based editor
 import task2
 import task3
 
+# Command class
+class Command:
+    def __init__(self, cmd, arg, data):
+        self.cmd = cmd
+        self.arg = arg
+        self.data = data
+
 # Node class
 class Node:
     def __init__(self, next, item):
@@ -16,13 +23,6 @@ class Node:
         self.item = item
 
     ### END NODE CLASS ###
-
-# Command class
-class Command:
-    def __init__(self, cmd, arg, data):
-        self.cmd = cmd
-        self.arg = arg
-        self.data = data
 
 # Linked node based stack implementation
 class StackADT:
@@ -372,7 +372,7 @@ class Editor:
                 
                 # Print lines
                 for i in range(len(nums)):
-                    print('  ' + self.text_lines[nums[i] - 1])
+                    print('  ' + str(nums[i]))
 
             elif cmd == 'undo' or cmd == 'u':            # Undo can be called by the command 'undo' or 'u'
                 self.undo()                                 # No argument required
