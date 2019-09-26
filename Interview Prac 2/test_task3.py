@@ -23,6 +23,10 @@ class TestTask3(unittest.TestCase):
     l.append('Line 3')
     l.append('Line 4')
     self.assertTrue(task3.read_text_file('small2.txt') == l)
-    
+
+    # Ensure file not found error thrown
+    with self.assertRaises(FileNotFoundError, msg = "Deleting out-of-bounds lines should fail."):
+        task3.read_text_file('file_that_does_not_exist.txt')    
+
 if __name__ == '__main__':
   unittest.main()
