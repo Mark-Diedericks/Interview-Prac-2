@@ -347,7 +347,7 @@ class Editor:
 
         try: 
             # Get user input and parse
-            user_input = input(">> ") + ' '      # Get user input and strip the whitespace, but ensure it always ends with whitespace
+            user_input = input(">> ") + ' '              # Get user input and strip the whitespace, but ensure it always ends with whitespace
             index = user_input.index(' ')                # Get the index of the first space, will be the end of the string if no arg is given
             end = len(user_input) - 1                    # Enter will add a space at the end of the search term, remove this space
             cmd = user_input[:index].strip().lower()     # Everything from the start to the first space is the command, convert to lower case
